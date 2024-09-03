@@ -19,7 +19,7 @@ public class UserState {
     private double expense;
     private double profit;
     private double kpn;
-    private boolean isNewCompany; // Новый флаг для определения, является ли это новая компания
+    private boolean isNewCompany;
 
     public Step getCurrentStep() {
         return currentStep;
