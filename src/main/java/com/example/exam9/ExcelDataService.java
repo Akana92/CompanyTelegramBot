@@ -1,9 +1,6 @@
 package com.example.exam9;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.CategoryChart;
@@ -202,11 +199,22 @@ public class ExcelDataService {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0) continue; // Пропускаем заголовок
 
-                months.add(row.getCell(0).getStringCellValue());
-                incomes.add(row.getCell(1).getNumericCellValue());
-                expenses.add(row.getCell(2).getNumericCellValue());
-                profits.add(row.getCell(3).getNumericCellValue());
-                kpns.add(row.getCell(4).getNumericCellValue());
+                // Обработка данных, проверка на null и корректность
+                if (row.getCell(0) != null && row.getCell(0).getCellType() == CellType.STRING) {
+                    months.add(row.getCell(0).getStringCellValue());
+                }
+                if (row.getCell(1) != null && row.getCell(1).getCellType() == CellType.NUMERIC) {
+                    incomes.add(row.getCell(1).getNumericCellValue());
+                }
+                if (row.getCell(2) != null && row.getCell(2).getCellType() == CellType.NUMERIC) {
+                    expenses.add(row.getCell(2).getNumericCellValue());
+                }
+                if (row.getCell(3) != null && row.getCell(3).getCellType() == CellType.NUMERIC) {
+                    profits.add(row.getCell(3).getNumericCellValue());
+                }
+                if (row.getCell(4) != null && row.getCell(4).getCellType() == CellType.NUMERIC) {
+                    kpns.add(row.getCell(4).getNumericCellValue());
+                }
             }
 
             // Построение графика
@@ -221,6 +229,12 @@ public class ExcelDataService {
             chart.addSeries("Расход", months, expenses);
             chart.addSeries("Прибыль", months, profits);
             chart.addSeries("КПН", months, kpns);
+
+            // Проверяем, существует ли директория для сохранения графика
+            File chartDir = new File("src/main/resources/files");
+            if (!chartDir.exists()) {
+                chartDir.mkdirs();
+            }
 
             // Сохранение графика в файл
             String chartPath = "src/main/resources/files/chart.png";

@@ -135,11 +135,19 @@ public class FinancialBot extends TelegramLongPollingBot {
         try {
             excelDataService.createFinancialChart(sheetName); // Создаем график
 
-            // Отправка графика пользователю
+            // Проверяем, существует ли файл графика
             String chartPath = "src/main/resources/files/chart.png";
+            File chartFile = new File(chartPath);
+
+            if (!chartFile.exists()) {
+                sendMessage(chatId, "График не был создан. Проверьте данные и попробуйте снова.");
+                return;
+            }
+
+            // Отправка графика пользователю
             SendPhoto sendPhotoRequest = new SendPhoto();
             sendPhotoRequest.setChatId(String.valueOf(chatId));
-            sendPhotoRequest.setPhoto(new InputFile(new File(chartPath)));
+            sendPhotoRequest.setPhoto(new InputFile(chartFile));
             execute(sendPhotoRequest);
 
         } catch (TelegramApiException e) {
